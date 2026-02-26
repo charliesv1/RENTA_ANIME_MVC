@@ -46,11 +46,16 @@ class AnimeController {
         // Redirigimos de vuelta a la lista principal
         header("Location: /renta_anime/"); 
     }
-    //Muestra la lista de todos los animes
-    public function index (){
-        $modelo=new Anime();
-        $listaAnimes=$modelo->listarTodos();//Envío al modelo
-        require_once 'views/anime/index.php';//Envío de datos a las vistas
+    // Muestra la lista de todos los animes
+    public function index() {
+        $modelo = new Anime();
+        
+        // Capturamos los datos de ordenamiento si existen en la URL
+        $orden_por = isset($_GET['orden_por']) ? $_GET['orden_por'] : 'id';
+        $direccion = isset($_GET['direccion']) ? $_GET['direccion'] : 'ASC';
+
+        $listaAnimes = $modelo->listarTodos($orden_por, $direccion); 
+        require_once 'views/anime/index.php';  
     }
     //Muestra el formulario para editar
     public function editar($id){

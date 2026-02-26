@@ -17,11 +17,23 @@ class Anime {
         return $stmt->execute([$titulo, $episodios, $portada]);
     }
 
-    public function listarTodos() {
-        $stmt = $this->db->query("SELECT * FROM animes");
+    public function listarTodos($orden_por = 'id', $direccion = 'ASC') {
+        // Validamos que solo se pueda ordenar por estas columnas para evitar hackeos
+        $columnas_permitidas = ['id', 'titulo', 'episodios'];
+        $direcciones_permitidas = ['ASC', 'DESC'];
+
+        if (!in_array($orden_por, $columnas_permitidas)) {
+            $orden_por = 'id';
+        }
+        if (!in_array($direccion, $direcciones_permitidas)) {
+            $direccion = 'ASC';
+        }
+
+        // Agregamos el ORDER BY a la consulta
+        $sql = "SELECT * FROM animes ORDER BY $orden_por $direccion";
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
     public function obtenerPorId($id) {
         $stmt = $this->db->prepare("SELECT * FROM animes WHERE id = ?");
         $stmt->execute([$id]);
